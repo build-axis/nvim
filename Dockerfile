@@ -19,7 +19,8 @@ RUN git clone https://github.com/LazyVim/starter /root/.config/nvim && \
     rm -rf /root/.config/nvim/.git
 
 RUN nvim --headless "+Lazy! sync" +qa && \
-    nvim --headless "+TSUpdateSync" +qa
+    nvim --headless "+TSUpdateSync" +qa && \
+    nvim --headless "+MasonToolsUpdateSync" +qa
 
 WORKDIR /src
 
