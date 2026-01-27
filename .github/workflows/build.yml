@@ -4,9 +4,9 @@ on:
     branches:
       - "**"
     paths-ignore:
-      - 'README.md'
       - '.gitignore'
       - 'LICENSE'
+  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -43,6 +43,16 @@ jobs:
         with:
           context: .
           push: true
-          # Added platforms support here
           platforms: linux/amd64,linux/arm64
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ steps.vars.outputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Update Docker Hub Description
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
+          short-description: "Lightweight Alpine-based Neovim with LazyVim pre-installed"
+          readme-filepath: ./README.md
