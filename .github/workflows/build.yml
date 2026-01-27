@@ -55,4 +55,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
           short-description: "Lightweight Alpine-based Neovim with LazyVim pre-installed"
-          readme-filepath: ./README.md
+          readme-filepath: README.md
