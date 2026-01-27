@@ -2,6 +2,7 @@ FROM alpine:latest
 
 LABEL org.opencontainers.image.source=https://github.com/build-axis/nvim
 
+# Добавлены зависимости для компиляции некоторых LSP
 RUN apk add --no-cache \
     neovim \
     git \
@@ -19,14 +20,18 @@ RUN apk add --no-cache \
     nodejs \
     npm \
     python3 \
-    py3-pip
+    py3-pip \
+    go \
+    cargo
 
 RUN git clone https://github.com/LazyVim/starter /root/.config/nvim && \
     rm -rf /root/.config/nvim/.git
 
+# Устанавливаем плагины и инструменты Mason при сборке
+# Добавляем установку конкретных LSP, если они прописаны в конфиге
 RUN nvim --headless "+Lazy! sync" +qa && \
-    nvim --headless "+TSUpdateSync" +qa && \
-    nvim --headless "+MasonToolsUpdateSync" +qa
+    nvim --headless "+MasonInstallAll" +qa || true && \
+    nvim --headless "+TSUpdateSync" +qa
 
 WORKDIR /src
 
