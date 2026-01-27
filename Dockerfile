@@ -13,7 +13,13 @@ RUN apk add --no-cache \
     lua5.1-dev \
     unzip \
     ca-certificates \
-    musl-locales
+    musl-locales \
+    gcompat \
+    libstdc++ \
+    nodejs \
+    npm \
+    python3 \
+    py3-pip
 
 RUN git clone https://github.com/LazyVim/starter /root/.config/nvim && \
     rm -rf /root/.config/nvim/.git
