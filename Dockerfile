@@ -1,4 +1,5 @@
 FROM alpine:latest
+LABEL org.opencontainers.image.source=https://github.com/build-axis/nvim
 RUN apk add --no-cache \
     neovim \
     git \
