@@ -9,19 +9,24 @@ RUN apk add --no-cache \
     fzf \
     bash \
     lua5.1-dev \
-    unzip
+    unzip \
+    ca-certificates
 
 # Clone the LazyVim starter template
-RUN git clone https://github.com/LazyVim/starter /root/.config/nvim
+RUN git clone https://github.com/LazyVim/starter /root/.config/nvim && \
+    rm -rf /root/.config/nvim/.git
 
-# Remove .git and pre-install plugins
-# We add "sleep 2" to ensure everything finishes correctly in some environments
-RUN rm -rf /root/.config/nvim/.git && \
-    nvim --headless "+Lazy! sync" +qa
+# Install plugins and wait for Treesitter/Mason to finish
+# We use a trick: run sync, then run a command that triggers 
+# all essential installs in headless mode.
+RUN nvim --headless "+Lazy! sync" +qa && \
+    nvim --headless "+TSUpdateSync" +qa
 
 WORKDIR /src
 
-# Set default environment to avoid some Neovim warnings
 ENV TERM=xterm-256color
+
+# This environment variable tells LazyVim not to check for updates on startup
+ENV LAZY_CHECK_FOR_UPDATES=false
 
 ENTRYPOINT ["nvim"]
