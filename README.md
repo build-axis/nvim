@@ -26,5 +26,5 @@ docker run -it --rm -v $(pwd):/src serh/nvim .
 To use this container like a native application, add this alias to your ~/.bashrc or ~/.zshrc:
 
 ```bash
-alias dnv='docker run -it --rm -v $(pwd):/src -v ~/.local/share/nvim-docker:/root/.local/share/nvim serh/nvim .'
+alias dnv='docker run -it --rm -v $(pwd):/src -v ~/.local/share/nvim-docker:/root/.local/share/nvim serh/nvim'
 ```
