@@ -16,5 +16,7 @@ RUN nvim --headless "+Lazy! sync" +qa && \
     nvim --headless "+TSUpdateSync" +qa
 WORKDIR /src
 ENV TERM=xterm-256color
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 ENV LAZY_CHECK_FOR_UPDATES=false
 ENTRYPOINT ["nvim"]
