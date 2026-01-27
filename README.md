@@ -29,9 +29,8 @@ To use this container like a native application, add this alias to your ~/.bashr
 ```bash
 alias dnv='docker run -it --rm \
   -v $(pwd):/src \
-  -v ~/.config/nvim:/root/.config/nvim \
-  -v ~/.local/share/nvim:/root/.local/share/nvim \
-  -v ~/.local/state/nvim:/root/.local/state/nvim \
-  -v ~/.cache/nvim:/root/.cache/nvim \
+  -v ~/.local/share/nvim-docker:/root/.local/share/nvim \
+  -v ~/.local/state/nvim-docker:/root/.local/state/nvim \
+  -v ~/.cache/nvim-docker:/root/.cache/nvim \
   serh/nvim'
 ```
