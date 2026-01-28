@@ -20,6 +20,7 @@ RUN apk add --no-cache \
     lua-language-server \
     wget \
     ca-certificates
+    
 
 RUN npm install -g pyright typescript-language-server
 
