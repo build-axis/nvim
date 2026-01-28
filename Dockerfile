@@ -19,20 +19,19 @@ RUN apk add --no-cache \
 RUN git clone https://github.com/LazyVim/starter /root/.config/nvim && \
     rm -rf /root/.config/nvim/.git
 
-# Настройка буфера обмена
 RUN echo 'vim.opt.clipboard = "unnamedplus"' >> /root/.config/nvim/lua/config/options.lua && \
     echo 'vim.g.clipboard = { name = "osc52", copy = { ["+"] = function(l) vim.fn.chansend(vim.v.stderr, "\27]52;c;" .. vim.base64.encode(table.concat(l, "\n")) .. "\7") end }, paste = { ["+"] = function() return {vim.fn.getreg("+"), vim.fn.getregtype("+")} end } }' >> /root/.config/nvim/lua/config/options.lua
 
-# Фиксируем список языков (файл ОСТАЕТСЯ в образе)
+# Создаем конфиг, который ЗАПРЕЩАЕТ автозагрузку (auto_install = false)
 RUN mkdir -p /root/.config/nvim/lua/plugins && \
-    echo 'return { { "nvim-treesitter/nvim-treesitter", opts = { ensure_installed = { "luadoc", "luap", "printf", "json", "toml", "query", "vimdoc", "diff", "regex", "jsdoc", "lua", "html", "bash", "c", "vim", "javascript", "python", "dtd", "tsx", "typescript", "xml", "markdown_inline", "markdown", "yaml" }, sync_install = true } } }' > /root/.config/nvim/lua/plugins/treesitter.lua
+    echo 'return { { "nvim-treesitter/nvim-treesitter", opts = { auto_install = false, ensure_installed = { "luadoc", "luap", "printf", "json", "toml", "query", "vimdoc", "diff", "regex", "jsdoc", "lua", "html", "bash", "c", "vim", "javascript", "python", "dtd", "tsx", "typescript", "xml", "markdown_inline", "markdown", "yaml" }, sync_install = true } } }' > /root/.config/nvim/lua/plugins/treesitter.lua
 
-# Предзагрузка плагинов и компиляция
+# Установка всего за один проход с ожиданием компиляции
 RUN nvim --headless "+Lazy! sync" +qa || true
 RUN nvim --headless "+TSUpdateSync" +qa || true
 
-# Специальный хак для blink.cmp, чтобы он скачал бинарник во время сборки
-RUN nvim --headless "+lua if require('blink.cmp') then vim.cmd('qa') end" +qa || true
+# Костыль для blink.cmp: заставляем его скомпилироваться/скачаться прямо сейчас
+RUN nvim --headless "+lua require('blink.cmp')" +qa || true
 
 WORKDIR /src
 
