@@ -7,7 +7,7 @@ ENV XDG_DATA_HOME=/root/.local/share \
     TERM=xterm-256color
 
 RUN apk add --no-cache \
-    neovim git curl ripgrep fzf bash unzip gcompat build-base
+    neovim git curl ripgrep fzf bash unzip nodejs npm tree-sitter-cli gcompat build-base
 
 RUN git clone --depth 1 https://github.com/LazyVim/starter /root/.config/nvim && \
     rm -rf /root/.config/nvim/.git
