@@ -19,7 +19,7 @@ A professional, lightweight **LazyVim** environment packed into a Docker contain
 To run the container and edit the current directory (ephemeral mode):
 
 ```bash
-docker run -it --rm --name dvm -v $(pwd):/src serh/nvim .
+docker run -it --rm --name dnv -v $(pwd):/src serh/nvim .
 ```
 
 ### Persistence Setup
