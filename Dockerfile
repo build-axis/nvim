@@ -12,11 +12,16 @@ RUN apk add --no-cache \
     unzip \
     nodejs \
     npm \
+    python3 \
+    py3-pip \
     tree-sitter-cli \
     gcompat \
     build-base \
+    lua-language-server \
     wget \
     ca-certificates
+
+RUN npm install -g pyright typescript-language-server
 
 RUN git clone https://github.com/LazyVim/starter /root/.config/nvim && \
     rm -rf /root/.config/nvim/.git
@@ -26,6 +31,8 @@ RUN echo 'vim.opt.clipboard = "unnamedplus"' >> /root/.config/nvim/lua/config/op
 
 
 RUN nvim --headless "+Lazy! sync" +qa || true
+RUN nvim --headless -c "MasonUpdate" -c "quitall" || true
+RUN nvim --headless -c "TSUpdateSync" -c "qa" || true
 
 
 WORKDIR /src
