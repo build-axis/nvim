@@ -18,6 +18,7 @@ RUN apk add --no-cache \
     gcompat \
     build-base \
     lua-language-server \
+    lua5.1-dev \
     wget \
     ca-certificates
     
