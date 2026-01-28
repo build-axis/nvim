@@ -13,7 +13,8 @@ RUN apk add --no-cache \
     nodejs \
     npm \
     tree-sitter-cli \
-    gcompat
+    gcompat \
+    build-base
 
 RUN git clone https://github.com/LazyVim/starter /root/.config/nvim && \
     rm -rf /root/.config/nvim/.git
