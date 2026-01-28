@@ -56,6 +56,6 @@ dnv .
 * **Clipboard**: OSC52 support enabled. This allows seamless copy-paste from Neovim to your system clipboard even when running inside Docker or over SSH.
 
 To verify your environment inside Neovim, you can run:
-@@@vim
+```vim
 :checkhealth
-@@@
+```
