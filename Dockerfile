@@ -22,15 +22,12 @@ RUN git clone https://github.com/LazyVim/starter /root/.config/nvim && \
 RUN echo 'vim.opt.clipboard = "unnamedplus"' >> /root/.config/nvim/lua/config/options.lua && \
     echo 'vim.g.clipboard = { name = "osc52", copy = { ["+"] = function(l) vim.fn.chansend(vim.v.stderr, "\27]52;c;" .. vim.base64.encode(table.concat(l, "\n")) .. "\7") end }, paste = { ["+"] = function() return {vim.fn.getreg("+"), vim.fn.getregtype("+")} end } }' >> /root/.config/nvim/lua/config/options.lua
 
-# Create a temporary plugin config to force treesitter install during build
 RUN mkdir -p /root/.config/nvim/lua/plugins && \
-    echo 'return { { "nvim-treesitter/nvim-treesitter", opts = { ensure_installed = { "lua", "vim", "vimdoc", "bash", "json", "markdown" } } } }' > /root/.config/nvim/lua/plugins/treesitter_setup.lua
+    echo 'return { { "nvim-treesitter/nvim-treesitter", opts = { ensure_installed = { "luadoc", "luap", "printf", "json", "toml", "query", "vimdoc", "diff", "regex", "jsdoc", "lua", "html", "bash", "c", "vim", "javascript", "python", "dtd", "tsx", "typescript", "xml", "markdown_inline", "markdown", "yaml" }, sync_install = true } } }' > /root/.config/nvim/lua/plugins/treesitter_setup.lua
 
-# Sync plugins and compile parsers
 RUN nvim --headless "+Lazy! sync" +qa || true
 RUN nvim --headless "+TSUpdateSync" +qa || true
 
-# Remove the temporary config after build so it doesn't interfere with your future setup
 RUN rm /root/.config/nvim/lua/plugins/treesitter_setup.lua
 
 WORKDIR /src
