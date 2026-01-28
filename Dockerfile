@@ -18,8 +18,7 @@ RUN apk add --no-cache \
     lua-language-server \
     lua5.1-dev \
     wget \
-    ca-certificates
-    
+    ca-certificates    
 
 RUN npm install -g pyright typescript-language-server
 
