@@ -12,8 +12,6 @@ RUN apk add --no-cache \
     unzip \
     nodejs \
     npm \
-    python3 \
-    py3-pip \
     tree-sitter-cli \
     gcompat \
     build-base \
