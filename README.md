@@ -1,6 +1,6 @@
-GitHub Repository: [https://github.com/build-axis/nvim](https://github.com/build-axis/nvim)
-
 # Alpine Neovim (LazyVim Edition)
+
+GitHub Repository: [https://github.com/build-axis/nvim](https://github.com/build-axis/nvim)
 
 A professional, lightweight **LazyVim** environment packed into a Docker container. This image allows you to use a fully-featured IDE-like Neovim setup on any machine without installing local dependencies.
 
@@ -15,22 +15,47 @@ A professional, lightweight **LazyVim** environment packed into a Docker contain
 
 ## Quick Start
 
-### Edit Current Directory
-The most common way to use this image is to mount your current folder into the container's `/src` directory:
+### Basic Usage
+To run the container and edit the current directory (ephemeral mode):
 
 ```bash
-docker run -it --rm -v $(pwd):/src serh/nvim .
+docker run -it --rm --name dvm -v $(pwd):/src serh/nvim .
 ```
 
+### Persistence Setup
+To keep your plugins and configuration changes persistent on your host machine, follow these steps:
 
-### Terminal Alias
-To use this container like a native application, add this alias to your ~/.bashrc or ~/.zshrc:
+1. **Extract the internal configuration:**
+```bash
+# Create a temporary container to copy files
+docker run -d --name dnv serh/nvim
+docker cp dnv:/root ~/.local/nvim-docker
+docker rm -f dnv
+```
 
+2. **Terminal Alias:**
+Add this alias to your `~/.bashrc` or `~/.zshrc`:
 ```bash
 alias dnv='docker run -it --rm \
   -v $(pwd):/src \
-  -v ~/.local/share/nvim-docker:/root/.local/share/nvim \
-  -v ~/.local/state/nvim-docker:/root/.local/state/nvim \
-  -v ~/.cache/nvim-docker:/root/.cache/nvim \
+  -v ~/.local/nvim-docker:/root \
   serh/nvim'
+```
+
+3. **Usage:**
+Now you can start Neovim in any directory with:
+```bash
+dnv .
+```
+
+---
+
+## Technical Details
+* **Container Workdir**: `/src` (automatically mounted via alias)
+* **Environment**: `TERM=xterm-256color`, `LANG=en_US.UTF-8`
+* **Clipboard**: OSC52 support enabled. This allows seamless copy-paste from Neovim to your system clipboard even when running inside Docker or over SSH.
+
+To verify your environment inside Neovim, you can run:
+```vim
+:checkhealth
 ```
