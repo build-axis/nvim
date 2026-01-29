@@ -24,7 +24,9 @@ RUN apk add --no-cache \
     libxml2 \
     libzip \
     oniguruma \
-    icu-libs
+    icu-libs \
+    libstdc++ \
+    libgcc
 
 COPY --from=php_source /usr/local/bin/php /usr/local/bin/php
 COPY --from=php_source /usr/local/lib/php /usr/local/lib/php
@@ -41,13 +43,15 @@ RUN echo 'vim.opt.clipboard = "unnamedplus"' >> /root/.config/nvim/lua/config/op
 RUN mkdir -p /root/.config/nvim/lua/plugins && \
     echo 'return { \
       { "nvim-treesitter/nvim-treesitter", opts = { ensure_installed = { "php", "bash", "lua", "markdown" } } }, \
-      { "williamboman/mason.nvim", opts = { ensure_installed = { "phpactor" } } } \
+      { "williamboman/mason.nvim", opts = { ensure_installed = { "phpactor" } } }, \
+      { "folke/lazy.nvim", opts = { checker = { enabled = false } } } \
     }' > /root/.config/nvim/lua/plugins/auto_install.lua
 
-RUN nvim --headless "+Lazy! sync" +qa || true
+RUN nvim --headless "+Lazy! sync" +qa
 
-RUN nvim --headless -c "Lazy load nvim-treesitter" -c "TSInstall! php" -c "qa" || true
-RUN nvim --headless -c "Lazy load mason.nvim" -c "MasonInstall phpactor" -c "qa" || true
+RUN nvim --headless -c "Lazy load nvim-treesitter" -c "TSInstall! php bash lua markdown" -c "sleep 20" -c "qa"
+
+RUN nvim --headless -c "Lazy load mason.nvim" -c "MasonInstall phpactor" -c "sleep 20" -c "qa"
 
 WORKDIR /src
 
