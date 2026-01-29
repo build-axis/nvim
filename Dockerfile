@@ -30,9 +30,17 @@ RUN echo 'vim.opt.clipboard = "unnamedplus"' >> /root/.config/nvim/lua/config/op
 
 
 RUN nvim --headless "+Lazy! sync" +qa || true
-RUN nvim --headless -c "MasonUpdate" -c "quitall" || true
-RUN nvim --headless -c "TSUpdateSync" -c "qa" || true
+RUN nvim --headless \
+    -c "lua require('lazy').load({plugins = {'mason.nvim'}})" \
+    -c "MasonUpdate" \
+    -c "sleep 20" \
+    -c "qa"
 
+RUN nvim --headless \
+    -c "lua require('lazy').sync({wait = true})" \
+    -c "TSUpdateSync" \
+    -c "sleep 20" \
+    -c "qa"
 
 WORKDIR /src
 
