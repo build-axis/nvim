@@ -2,60 +2,60 @@
 
 GitHub Repository: [https://github.com/build-axis/nvim](https://github.com/build-axis/nvim)
 
-A professional, lightweight **LazyVim** environment packed into a Docker container. This image allows you to use a fully-featured IDE-like Neovim setup on any machine without installing local dependencies.
+Professional, lightweight **LazyVim** environment in a Docker container. Work with a full IDE setup on any machine while maintaining host file permissions.
 
 ## Features
 * **Alpine Linux**: Minimal footprint and high performance.
-* **LazyVim Starter**: Pre-installed and ready to use.
-* **Build Tools**: Includes `build-base`, `gcc`, and `lua` for compiling plugins.
-* **Search Tools**: `ripgrep` and `fzf` integrated for ultra-fast navigation.
-* **Utilities**: `git`, `curl`, and `unzip` for plugin management.
+* **LazyVim Starter**: Pre-configured and ready to use.
+* **UID/GID Sync**: Automatically matches your host user ID to prevent permission issues with edited files.
+* **Built-in Tools**: `ripgrep`, `fzf`, `gcc`, `gcompat`, and `nodejs` for LSP and Tree-sitter.
+* **OSC52 Clipboard**: Seamless copy-paste support, even over SSH.
 
 ---
 
 ## Quick Start
 
 ### Basic Usage
-To run the container and edit the current directory (ephemeral mode):
+Run the container to edit the current directory (files created will be owned by your current user):
 
 ```bash
-docker run -it --rm --name dnv -v $(pwd):/src serh/nvim .
+docker run -it --rm \
+  -e LOCAL_UID=$(id -u) \
+  -e LOCAL_GID=$(id -g) \
+  -v $(pwd):/src \
+  serh/nvim .
 ```
 
-### Persistence Setup
-To keep your plugins and configuration changes persistent on your host machine, follow these steps:
+### Persistence Setup (Recommended)
+To persist your Neovim configuration, plugins, and cache on your host machine:
 
-1. **Extract the internal configuration:**
-```bash
-# Create a temporary container to copy files
-docker run -d --name dnv serh/nvim
-docker cp dnv:/root ~/.local/nvim-docker
-docker rm -f dnv
-```
+1. **Create an alias** in your `~/.bashrc` or `~/.zshrc`:
 
-2. **Terminal Alias:**
-Add this alias to your `~/.bashrc` or `~/.zshrc`:
 ```bash
 alias dnv='docker run -it --rm \
+  -e LOCAL_UID=$(id -u) \
+  -e LOCAL_GID=$(id -g) \
   -v $(pwd):/src \
-  -v ~/.local/nvim-docker:/root \
+  -v ~/.local/share/nvim-docker:/home/editor \
   serh/nvim'
 ```
 
-3. **Usage:**
-Now you can start Neovim in any directory with:
+2. **Usage**:
+Simply type `dnv` in any project folder:
 ```bash
 dnv .
 ```
+*Note: On the first run with a new volume, the container will automatically initialize LazyVim config in your host folder.*
 
 ---
 
 ## Technical Details
-* **Container Workdir**: `/src` (automatically mounted via alias)
-* **Environment**: `TERM=xterm-256color`, `LANG=en_US.UTF-8`
-* **Clipboard**: OSC52 support enabled. This allows seamless copy-paste from Neovim to your system clipboard even when running inside Docker or over SSH.
+* **User Management**: The container uses `su-exec` to switch from `root` to a user named `editor` with your specific `UID/GID` at runtime.
+* **Workdir**: `/src` (mapped to your project).
+* **Home Directory**: `/home/editor` (where config and plugins reside).
+* **Clipboard**: OSC52 enabled by default. Works out of the box with modern terminals (Alacritty, Kitty, iTerm2).
 
-To verify your environment inside Neovim, you can run:
+To verify the setup inside Neovim:
 ```vim
 :checkhealth
 ```
